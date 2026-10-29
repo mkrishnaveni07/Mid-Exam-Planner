@@ -1,0 +1,376 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>CSM Mid Exam Planner</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: a notice-board page. Masthead, live IST date, one big "next exam" countdown, six colour-coded exam cards, personal planner, coming-soon note. */
+:root{
+  --bg:#f2f4f1;          /* paper with a green lean */
+  --surface:#ffffff;
+  --fg:#14202b;          /* ink */
+  --muted:#586573;
+  --line:#d5dbd6;
+  --brand:#7a1f2e;       /* university maroon */
+  --brand-fg:#ffffff;
+  --calm:#0f766e;        /* 8+ days */
+  --soon:#a16207;        /* 4-7 days */
+  --near:#c2410c;        /* 1-3 days */
+  --now:#b91c1c;         /* today / in progress */
+  --done:#6b7280;        /* finished */
+  --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --f-body:"Hanken Grotesk","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1714;--surface:#17211d;--fg:#e7ece8;--muted:#9aa8a1;--line:#2b3a34;
+  --brand:#e4899a;--brand-fg:#2a0d14;
+  --calm:#4fd1c0;--soon:#f0c14b;--near:#fb9a63;--now:#ff7b7b;--done:#8b94a0;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1714;--surface:#17211d;--fg:#e7ece8;--muted:#9aa8a1;--line:#2b3a34;
+  --brand:#e4899a;--brand-fg:#2a0d14;
+  --calm:#4fd1c0;--soon:#f0c14b;--near:#fb9a63;--now:#ff7b7b;--done:#8b94a0;
+  color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;line-height:1.55;
+  padding-block:0 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:40px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1}
+p{margin:0}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+
+/* masthead */
+.mast{padding-top:28px;display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between;align-items:flex-end;border-bottom:2px solid var(--fg);padding-bottom:16px}
+.mast .org{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.mast .campus{font-family:var(--f-display);font-weight:800;font-size:1.35rem;color:var(--brand);letter-spacing:.01em}
+.mast .links{font-size:.85rem;color:var(--muted);text-align:right}
+.mast .links span{display:block}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px 40px;align-items:start}
+.hero h1{font-size:clamp(2.2rem,6vw,3.8rem);font-weight:800;letter-spacing:-.02em}
+.hero .sub{margin-top:14px;color:var(--muted);max-width:46ch}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.tag{font-size:.8rem;font-weight:600;border:1.5px solid var(--fg);padding:3px 10px;border-radius:999px}
+.tag.fill{background:var(--brand);border-color:var(--brand);color:var(--brand-fg)}
+.today{margin-top:22px;border-left:4px solid var(--brand);padding:2px 0 2px 14px}
+.today .lbl{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.today .date{font-family:var(--f-display);font-size:1.5rem;font-weight:700}
+.today .clock{font-size:1rem;color:var(--muted)}
+
+.next{--s:var(--calm);background:color-mix(in srgb,var(--s) 11%,var(--surface));border:2px solid var(--s);border-radius:6px;padding:22px}
+.next .lbl{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--s)}
+.next h2{font-size:clamp(1.4rem,3.5vw,1.9rem);margin-top:6px}
+.next .when{color:var(--muted);font-size:.92rem;margin-top:4px}
+.units{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:18px}
+.u{background:var(--surface);border:1px solid color-mix(in srgb,var(--s) 45%,var(--line));border-radius:4px;padding:10px 4px 6px;text-align:center}
+.u b{display:block;font-family:var(--f-mono);font-weight:700;font-size:clamp(1.5rem,5vw,2.4rem);line-height:1.1;color:var(--s)}
+.u i{font-style:normal;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.next .msg{margin-top:14px;font-weight:600;color:var(--s)}
+
+/* sections */
+.sec-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px 16px;margin-bottom:16px}
+.sec-head h2{font-size:1.6rem}
+.sec-head p{color:var(--muted);font-size:.92rem}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.8rem;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend em{width:10px;height:10px;border-radius:50%;display:inline-block;background:var(--c)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.card{--s:var(--calm);background:color-mix(in srgb,var(--s) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--s) 55%,var(--line));border-top:5px solid var(--s);border-radius:6px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0;transition:background .4s,border-color .4s}
+.card[data-st="calm"]{--s:var(--calm)}
+.card[data-st="soon"]{--s:var(--soon)}
+.card[data-st="near"]{--s:var(--near)}
+.card[data-st="now"]{--s:var(--now)}
+.card[data-st="done"]{--s:var(--done)}
+.next[data-st="calm"]{--s:var(--calm)}
+.next[data-st="soon"]{--s:var(--soon)}
+.next[data-st="near"]{--s:var(--near)}
+.next[data-st="now"]{--s:var(--now)}
+.next[data-st="done"]{--s:var(--done)}
+.card .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.card .day{font-family:var(--f-mono);font-size:.8rem;font-weight:700;color:var(--s)}
+.card .day small{display:block;color:var(--muted);font-weight:500;font-size:.75rem}
+.pill{font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--s);border:1.5px solid var(--s);border-radius:999px;padding:2px 9px;white-space:nowrap}
+.card h3{font-size:1.2rem;font-weight:700}
+.card .time{font-size:.88rem;color:var(--muted)}
+.mini{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.mini div{background:var(--surface);border:1px solid var(--line);border-radius:4px;text-align:center;padding:6px 2px 3px}
+.mini b{display:block;font-family:var(--f-mono);font-size:1.15rem;color:var(--s);line-height:1.2}
+.mini i{font-style:normal;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.card[data-st="now"] .pill{animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.45}}
+.card .rm{align-self:flex-start;font:inherit;font-size:.8rem;background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;padding:2px 0}
+.mine{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* planner */
+.planner{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:20px}
+form{display:grid;grid-template-columns:minmax(0,2fr) repeat(2,minmax(0,1fr)) auto;gap:12px;align-items:end}
+label{display:flex;flex-direction:column;gap:5px;font-size:.8rem;font-weight:600;color:var(--muted);min-width:0}
+input{font:inherit;font-size:1rem;color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:4px;padding:9px 10px;min-width:0;width:100%}
+button.add{font:inherit;font-weight:700;background:var(--brand);color:var(--brand-fg);border:0;border-radius:4px;padding:11px 20px;cursor:pointer}
+button.add:hover{filter:brightness(1.1)}
+.err{color:var(--now);font-size:.88rem;margin-top:10px;min-height:1.2em}
+.empty{border:1.5px dashed var(--line);border-radius:6px;padding:22px;color:var(--muted);text-align:center;margin-top:16px}
+#mine{margin-top:16px}
+
+/* notes + coming soon */
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.note{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:18px}
+.note h3{font-size:1.1rem;margin-bottom:8px}
+.note ul{margin:0;padding-left:1.1rem;display:flex;flex-direction:column;gap:6px}
+.soon-box{border:2px dashed var(--brand);border-radius:6px;padding:18px;display:flex;flex-direction:column;gap:8px;justify-content:center}
+.soon-box .badge{display:inline-flex;align-items:center;gap:8px;font-weight:700;color:var(--brand);font-size:.8rem;letter-spacing:.1em;text-transform:uppercase}
+.soon-box .badge::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--brand);animation:pulse 1.6s ease-in-out infinite}
+.soon-box h3{font-size:1.25rem}
+.soon-box p{color:var(--muted);font-size:.92rem}
+footer{border-top:1px solid var(--line);padding-top:16px;color:var(--muted);font-size:.84rem;display:flex;flex-direction:column;gap:4px}
+
+@media (max-width:760px){
+  .hero{grid-template-columns:minmax(0,1fr)}
+  .mast .links{text-align:left}
+  form{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  form label:first-child{grid-column:1/-1}
+  button.add{grid-column:1/-1}
+  .two{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <div>
+      <div class="org">Jawaharlal Nehru Technological University Hyderabad</div>
+      <div class="campus">JNTUH-UCEW &middot; University College of Engineering, Wanaparthy</div>
+    </div>
+    <div class="links">
+      <span>www.jntuh.ac.in</span>
+      <span>principal-jntuhucew@jntuh.ac.in</span>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <h1>III B.Tech I Sem II Mid Term Exams, Nov 2026</h1>
+      <p class="sub">Time table and exam countdown for CSM. Six papers from 2 to 7 November, each from 2:00 pm to 4:00 pm.</p>
+      <div class="tags"><span class="tag fill">Branch: CSM</span><span class="tag">2:00 pm &ndash; 4:00 pm</span><span class="tag">2 &ndash; 7 Nov 2026</span></div>
+      <div class="today">
+        <div class="lbl">Today in India (IST)</div>
+        <div class="date" id="todayDate">&nbsp;</div>
+        <div class="clock mono" id="todayClock">&nbsp;</div>
+      </div>
+    </div>
+    <div class="next" id="next" data-st="calm" aria-live="off">
+      <div class="lbl">Next exam</div>
+      <h2 id="nxName">Loading</h2>
+      <p class="when" id="nxWhen"></p>
+      <div class="units">
+        <div class="u"><b id="nD">--</b><i>Days</i></div>
+        <div class="u"><b id="nH">--</b><i>Hours</i></div>
+        <div class="u"><b id="nM">--</b><i>Min</i></div>
+        <div class="u"><b id="nS">--</b><i>Sec</i></div>
+      </div>
+      <p class="msg" id="nxMsg"></p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <div>
+        <h2>CSM mid exam time table</h2>
+        <p>Cards change colour as each exam gets closer.</p>
+      </div>
+      <div class="legend" aria-label="Colour guide">
+        <span><em style="--c:var(--calm)"></em>8+ days</span>
+        <span><em style="--c:var(--soon)"></em>4&ndash;7 days</span>
+        <span><em style="--c:var(--near)"></em>1&ndash;3 days</span>
+        <span><em style="--c:var(--now)"></em>Today</span>
+        <span><em style="--c:var(--done)"></em>Done</span>
+      </div>
+    </div>
+    <div class="grid" id="official"></div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <div>
+        <h2>Exam Countdown Planner</h2>
+        <p>Add your own exam, viva or lab test and get a countdown card for it. Time is in IST.</p>
+      </div>
+    </div>
+    <div class="planner">
+      <form id="addForm" autocomplete="off">
+        <label for="fSubject">Subject or exam name<input id="fSubject" type="text" maxlength="60" placeholder="e.g. Machine Learning lab viva"></label>
+        <label for="fDate">Date<input id="fDate" type="date"></label>
+        <label for="fTime">Start time<input id="fTime" type="time" value="14:00"></label>
+        <button class="add" type="submit">Add exam</button>
+      </form>
+      <p class="err" id="err" role="alert"></p>
+      <div id="mine" class="grid"></div>
+      <div class="empty" id="mineEmpty">No personal exams yet. Add one above and its card will appear here.</div>
+    </div>
+  </section>
+
+  <section class="two">
+    <div class="note">
+      <h3>Instructions from the college</h3>
+      <ul>
+        <li>Occupy your seat as per the seating arrangement at least 15 minutes before the exam.</li>
+        <li>Carry your own stationery and your ID card for the mid exams.</li>
+      </ul>
+    </div>
+    <div class="soon-box">
+      <span class="badge">Coming soon</span>
+      <h3>Semester examination time table</h3>
+      <p>The semester examination schedule has not been released yet. It will be added here once JNTUH-UCEW announces it.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>Schedule taken from the mid term examination notice of JNTUH University College of Engineering Wanaparthy (Narsingaipalli, Gopalpet Road, Wanaparthy Dist., Telangana 509103).</span>
+    <span>Check the college notice board for any later change.</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var TZ='Asia/Kolkata', OFF='+05:30';
+  var OFFICIAL=[
+    {id:'o1',subject:'Design and Analysis of Algorithms',date:'2026-11-02',time:'14:00',end:'16:00'},
+    {id:'o2',subject:'Computer Networks',date:'2026-11-03',time:'14:00',end:'16:00'},
+    {id:'o3',subject:'Machine Learning',date:'2026-11-04',time:'14:00',end:'16:00'},
+    {id:'o4',subject:'Business Economics & Financial Analysis',date:'2026-11-05',time:'14:00',end:'16:00'},
+    {id:'o5',subject:'Web Programming',date:'2026-11-06',time:'14:00',end:'16:00'},
+    {id:'o6',subject:'Intellectual Property Rights',date:'2026-11-07',time:'14:00',end:'16:00'}
+  ];
+  var mine=[];
+  try{var raw=localStorage.getItem('csm-mine-v1');if(raw){var p=JSON.parse(raw);if(Array.isArray(p))mine=p}}catch(e){}
+  function save(){try{localStorage.setItem('csm-mine-v1',JSON.stringify(mine))}catch(e){}}
+
+  function pad(n){return String(n).padStart(2,'0')}
+  function at(d,t){return new Date(d+'T'+t+':00'+OFF).getTime()}
+  function istToday(){
+    var p=new Intl.DateTimeFormat('en-CA',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+    return p;
+  }
+  function dayInfo(d){
+    var dt=new Date(d+'T12:00:00'+OFF);
+    return {
+      wd:new Intl.DateTimeFormat('en-IN',{timeZone:TZ,weekday:'long'}).format(dt),
+      dm:new Intl.DateTimeFormat('en-IN',{timeZone:TZ,day:'numeric',month:'long',year:'numeric'}).format(dt),
+      short:new Intl.DateTimeFormat('en-IN',{timeZone:TZ,day:'2-digit',month:'short'}).format(dt)
+    };
+  }
+  function t12(t){var h=+t.slice(0,2),m=t.slice(3,5);return (h%12||12)+':'+m+' '+(h<12?'am':'pm')}
+
+  function status(e,now){
+    var s=at(e.date,e.time),en=at(e.date,e.end),left=s-now;
+    if(now>=en)return {st:'done',label:'Completed',left:0};
+    if(now>=s)return {st:'now',label:'In progress',left:0};
+    var days=left/864e5;
+    if(istToday()===e.date)return {st:'now',label:'Today',left:left};
+    if(days<4)return {st:'near',label:days<2?'Tomorrow':'Almost here',left:left};
+    if(days<8)return {st:'soon',label:'Getting close',left:left};
+    return {st:'calm',label:'On track',left:left};
+  }
+  function split(ms){
+    var t=Math.max(0,Math.floor(ms/1000));
+    return {d:Math.floor(t/86400),h:Math.floor(t%86400/3600),m:Math.floor(t%3600/60),s:t%60};
+  }
+
+  function cardHTML(e,isMine){
+    var di=dayInfo(e.date);
+    return '<article class="card" id="c-'+e.id+'" data-st="calm">'+
+      '<div class="top"><div class="day">'+di.short.toUpperCase()+'<small>'+di.wd+'</small></div><span class="pill"></span></div>'+
+      '<div><h3></h3><p class="time">'+t12(e.time)+' &ndash; '+t12(e.end)+(isMine?' &middot; <span class="mine">Your exam</span>':'')+'</p></div>'+
+      '<div class="mini"><div><b data-k="d">--</b><i>Days</i></div><div><b data-k="h">--</b><i>Hrs</i></div><div><b data-k="m">--</b><i>Min</i></div><div><b data-k="s">--</b><i>Sec</i></div></div>'+
+      (isMine?'<button class="rm" type="button" data-rm="'+e.id+'">Remove</button>':'')+
+    '</article>';
+  }
+  function renderLists(){
+    var o=document.getElementById('official');
+    o.innerHTML=OFFICIAL.map(function(e){return cardHTML(e,false)}).join('');
+    OFFICIAL.forEach(function(e){o.querySelector('#c-'+e.id+' h3').textContent=e.subject});
+    var m=document.getElementById('mine');
+    var sorted=mine.slice().sort(function(a,b){return at(a.date,a.time)-at(b.date,b.time)});
+    m.innerHTML=sorted.map(function(e){return cardHTML(e,true)}).join('');
+    sorted.forEach(function(e){m.querySelector('#c-'+e.id+' h3').textContent=e.subject});
+    document.getElementById('mineEmpty').hidden=sorted.length>0;
+    tick();
+  }
+
+  var MSG={calm:'Plenty of time. Keep revising at a steady pace.',soon:'Getting close. Start your revision plan now.',near:'Almost here. Focus on important topics and past papers.',now:'It is exam time. Reach your seat 15 minutes early.',done:'All exams are completed.'};
+
+  function tick(){
+    var now=Date.now();
+    var d=new Date();
+    var di=dayInfo(istToday());
+    document.getElementById('todayDate').textContent=di.wd+', '+di.dm;
+    document.getElementById('todayClock').textContent=new Intl.DateTimeFormat('en-IN',{timeZone:TZ,hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true}).format(d).toUpperCase()+' IST';
+
+    var all=OFFICIAL.concat(mine);
+    all.forEach(function(e){
+      var c=document.getElementById('c-'+e.id);if(!c)return;
+      var s=status(e,now),p=split(s.left);
+      c.setAttribute('data-st',s.st);
+      c.querySelector('.pill').textContent=s.label;
+      c.querySelector('[data-k=d]').textContent=p.d;
+      c.querySelector('[data-k=h]').textContent=pad(p.h);
+      c.querySelector('[data-k=m]').textContent=pad(p.m);
+      c.querySelector('[data-k=s]').textContent=pad(p.s);
+    });
+
+    var upcoming=all.filter(function(e){return now<at(e.date,e.end)}).sort(function(a,b){return at(a.date,a.time)-at(b.date,b.time)});
+    var box=document.getElementById('next');
+    if(!upcoming.length){
+      box.setAttribute('data-st','done');
+      document.getElementById('nxName').textContent='All exams completed';
+      document.getElementById('nxWhen').textContent='Good luck with the results.';
+      ['D','H','M','S'].forEach(function(k){document.getElementById('n'+k).textContent='00'});
+      document.getElementById('nxMsg').textContent='';
+      return;
+    }
+    var e=upcoming[0],s=status(e,now),p=split(s.left),dd=dayInfo(e.date);
+    box.setAttribute('data-st',s.st);
+    document.getElementById('nxName').textContent=e.subject;
+    document.getElementById('nxWhen').textContent=dd.wd+', '+dd.dm+' · '+t12(e.time)+' – '+t12(e.end);
+    document.getElementById('nD').textContent=p.d;
+    document.getElementById('nH').textContent=pad(p.h);
+    document.getElementById('nM').textContent=pad(p.m);
+    document.getElementById('nS').textContent=pad(p.s);
+    document.getElementById('nxMsg').textContent=MSG[s.st];
+  }
+
+  document.getElementById('addForm').addEventListener('submit',function(ev){
+    ev.preventDefault();
+    var sub=document.getElementById('fSubject').value.trim(),
+        dt=document.getElementById('fDate').value,
+        tm=document.getElementById('fTime').value||'14:00',
+        err=document.getElementById('err');
+    if(!sub){err.textContent='Enter the subject or exam name.';return}
+    if(!dt){err.textContent='Pick the exam date.';return}
+    var sMs=at(dt,tm);
+    if(isNaN(sMs)){err.textContent='That date or time is not valid.';return}
+    if(sMs<Date.now()){err.textContent='That time has already passed. Pick a future date and time.';return}
+    var h=(+tm.slice(0,2)+2)%24, endT=pad(h)+tm.slice(2,5);
+    mine.push({id:'m'+Date.now(),subject:sub,date:dt,time:tm,end:endT});
+    save();err.textContent='';
+    document.getElementById('fSubject').value='';
+    renderLists();
+  });
+  document.getElementById('mine').addEventListener('click',function(ev){
+    var id=ev.target.getAttribute&&ev.target.getAttribute('data-rm');
+    if(!id)return;
+    mine=mine.filter(function(e){return e.id!==id});save();renderLists();
+  });
+
+  var today=istToday();
+  document.getElementById('fDate').min=today;
+  renderLists();
+  setInterval(tick,1000);
+})();
+</script>
+
+</body></html>
